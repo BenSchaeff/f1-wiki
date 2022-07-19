@@ -1,0 +1,20 @@
+<mat-form-field class = "formField" appearance="fill">
+  <mat-select placeholder = "Year" [(value)] = 'selectedSeason' (selectionChange)="updateInfo()">
+    <mat-option *ngFor="let season of seasons" [value] = "season.season">{{season.season}}</mat-option>
+  </mat-select>
+</mat-form-field>
+<mat-form-field class = "formField" appearance="fill">
+  <mat-select placeholder = "Driver" [(value)] = 'selectedDriver' (selectionChange)="updateInfo()">
+    <mat-option *ngFor="let driver of drivers" [value] = "driver.driverId" >{{driver.givenName}} {{driver.familyName}}</mat-option>
+  </mat-select>
+</mat-form-field>
+
+<mat-form-field class = "formField" appearance="fill">
+  <mat-select placeholder = "Constructor" [(value)] = 'selectedConstructor' (selectionChange)="updateInfo()">
+    <mat-option *ngFor="let constructor of constructors" [value] = "constructor.constructorId">{{constructor.name}}</mat-option>
+  </mat-select>
+</mat-form-field>
+<button (click) = "searchResults()">Search</button>
+
+<results-table></results-table>
+
