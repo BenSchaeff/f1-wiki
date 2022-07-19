@@ -3,7 +3,8 @@ import { DriverService } from '../services/driver.service';
 import { ConstructorService } from '../services/constructors.service';
 import { ResultsService } from '../services/results.service';
 import { SeasonsService } from '../services/seasons.service';
-import { Driver, Constructor, Season } from '../models/all.models';
+import { Driver, Constructor, Season, Race } from '../models/all.models';
+import { ResultsComponent } from '../results/results.component';
 
 @Component({
   selector: 'result-search',
@@ -12,7 +13,7 @@ import { Driver, Constructor, Season } from '../models/all.models';
 })
 export class SearchComponent implements OnInit {
   public drivers: Driver[] = [];
-
+  public searchResults: Race[] = [];
   public constructors: Constructor[] = [];
   public seasons : Season[] = [];
 
@@ -20,6 +21,7 @@ export class SearchComponent implements OnInit {
   public selectedDriver : string = '';
   public selectedConstructor: string = '';
   public selectedSeason: string = '';
+  public isMissingDriver : boolean = true;
 
   constructor(private driverService : DriverService,
               private constructorService : ConstructorService,
@@ -32,9 +34,14 @@ export class SearchComponent implements OnInit {
     this.constructorService.getConstructors().subscribe(data => this.constructors = data);
     this.seasonService.getSeasons().subscribe(data => this.seasons = data);
 
+
   }
-  public searchResults(){
-    this.resultsService.searchResults(this.selectedDriver, this.selectedConstructor, this.selectedSeason).subscribe(data => console.log(data));
+  public getResults(){
+    this.resultsService.getResults(this.selectedDriver, this.selectedConstructor, this.selectedSeason).subscribe(data => console.log(data));
+    //send our results to the service
+    this.resultsService.getResults(this.selectedDriver, this.selectedConstructor, this.selectedSeason).subscribe(data => this.searchResults = data);
+    if(this.selectedDriver)
+      this.isMissingDriver = false
   }
 
   public updateInfo(){
