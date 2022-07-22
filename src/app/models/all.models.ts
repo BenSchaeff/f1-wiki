@@ -30,6 +30,8 @@ export interface Result{
   number : string
   points : string
   poisition : string;
+  raceName?: string;
+  season?: string;
 }
 export interface Time{
   millis: string

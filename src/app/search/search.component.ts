@@ -5,7 +5,7 @@ import { ResultsService } from '../services/results.service';
 import { SeasonsService } from '../services/seasons.service';
 import { Driver, Constructor, Season, Race, Result } from '../models/all.models';
 import { ResultsComponent } from '../results/results.component';
-import { Observable, map } from 'rxjs';
+import { Observable, map, race } from 'rxjs';
 import { pipe } from 'rxjs';
 
 
@@ -21,8 +21,8 @@ export class SearchComponent implements OnInit {
   public seasons$ : Observable<Season[]>
 
   public raceResults$ : Observable<Race[]>
-
-
+  public allResults$ : Observable<Result[][]>
+  public formattedResults$ : Observable<Result[]>
   //currently selected on the form
   public selectedDriver : string = '';
   public selectedConstructor: string = '';
@@ -41,14 +41,12 @@ export class SearchComponent implements OnInit {
     this.seasons$ = this.seasonService.getSeasons();
   }
   public getResults(){
-    //log results for debugging
-    this.resultsService.getResults(this.selectedDriver, this.selectedConstructor, this.selectedSeason).subscribe(data => console.log(data));
     //send our results to the service
     this.raceResults$ = this.resultsService.getResults(this.selectedDriver, this.selectedConstructor, this.selectedSeason);
-
-    if(this.selectedDriver)
-      this.isMissingDriver = false
-
+    //take results and give us the results object, and within that results object we append the season and raceName
+    this.allResults$ = this.raceResults$.pipe(map(response => response.map(raceResult => raceResult.Results.map(result => ({...result, raceName : raceResult.raceName, season: raceResult.season})))))
+    //since those are spit out in arrays themselves, we flatten those and get one big array of results
+    this.formattedResults$ = this.allResults$.pipe(map(result => result.flat(2)))
   }
 
   public updateInfo(){
