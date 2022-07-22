@@ -1,20 +1,25 @@
-import { Component, OnInit, Input, OnChanges } from '@angular/core';
+import { Component, OnInit, Input, OnChanges, ViewChild } from '@angular/core';
 import { ResultsService } from '../services/results.service';
-import { map } from 'rxjs/operators';
-import { Race, Result } from '../models/all.models';
+import { filter, map, tap } from 'rxjs/operators';
+import { Race } from '../models/all.models';
+import { Observable } from 'rxjs';
+import { MatPaginator } from '@angular/material/paginator';
+import { MatTableDataSource } from '@angular/material/table';
+
 @Component({
   selector: 'results-table',
   templateUrl: './results.component.html',
   styleUrls: ['./results.component.css']
 })
 export class ResultsComponent implements OnInit {
-  @Input() raceResults : Race[] = [];
+  @Input() raceResults$ : Observable<Race[]>
   @Input() missingDriver : boolean = false;
   public displayedColumns: string[] = ['Season', 'RaceName', 'Driver','Position','Points'];
 
-  constructor(private resultsService : ResultsService) { }
+  constructor() { }
 
   ngOnInit(): void {
+
   }
 
 

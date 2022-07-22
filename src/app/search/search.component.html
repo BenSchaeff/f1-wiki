@@ -1,23 +1,24 @@
 <mat-form-field class = "formField" appearance="fill">
   <mat-select placeholder = "Year" [(value)] = 'selectedSeason' (selectionChange)="updateInfo()">
     <mat-option>All</mat-option>t
-    <mat-option *ngFor="let season of seasons" [value] = "season.season">{{season.season}}</mat-option>
+    <mat-option *ngFor="let season of seasons$ | async" [value] = "season.season">{{season.season}}</mat-option>
   </mat-select>
 </mat-form-field>
 <mat-form-field class = "formField" appearance="fill">
   <mat-select placeholder = "Driver" [(value)] = 'selectedDriver' (selectionChange)="updateInfo()">
     <mat-option>All</mat-option>
-    <mat-option *ngFor="let driver of drivers" [value] = "driver.driverId" >{{driver.givenName}} {{driver.familyName}}</mat-option>
+    <mat-option *ngFor="let driver of drivers$ | async" [value] = "driver.driverId" >{{driver.givenName}} {{driver.familyName}}</mat-option>
   </mat-select>
 </mat-form-field>
 
 <mat-form-field class = "formField" appearance="fill">
   <mat-select placeholder = "Constructor" [(value)] = 'selectedConstructor' (selectionChange)="updateInfo()">
     <mat-option>All</mat-option>
-    <mat-option *ngFor="let constructor of constructors" [value] = "constructor.constructorId">{{constructor.name}}</mat-option>
+    <mat-option *ngFor="let constructor of constructors$ | async" [value] = "constructor.constructorId">{{constructor.name}}</mat-option>
   </mat-select>
 </mat-form-field>
 <button (click) = "getResults()">Search</button>
 
-<results-table [raceResults]="searchResults" [missingDriver]="isMissingDriver"></results-table>
+
+<results-table [raceResults$]="raceResults$" [missingDriver]="isMissingDriver"></results-table>
 

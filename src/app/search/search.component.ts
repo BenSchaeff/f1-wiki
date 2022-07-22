@@ -3,8 +3,11 @@ import { DriverService } from '../services/driver.service';
 import { ConstructorService } from '../services/constructors.service';
 import { ResultsService } from '../services/results.service';
 import { SeasonsService } from '../services/seasons.service';
-import { Driver, Constructor, Season, Race } from '../models/all.models';
+import { Driver, Constructor, Season, Race, Result } from '../models/all.models';
 import { ResultsComponent } from '../results/results.component';
+import { Observable, map } from 'rxjs';
+import { pipe } from 'rxjs';
+
 
 @Component({
   selector: 'result-search',
@@ -12,10 +15,13 @@ import { ResultsComponent } from '../results/results.component';
   styleUrls: ['./search.component.css']
 })
 export class SearchComponent implements OnInit {
-  public drivers: Driver[] = [];
-  public searchResults: Race[] = [];
-  public constructors: Constructor[] = [];
-  public seasons : Season[] = [];
+
+  public drivers$: Observable<Driver[]>;
+  public constructors$: Observable<Constructor[]>
+  public seasons$ : Observable<Season[]>
+
+  public raceResults$ : Observable<Race[]>
+
 
   //currently selected on the form
   public selectedDriver : string = '';
@@ -30,43 +36,50 @@ export class SearchComponent implements OnInit {
 
   ngOnInit(): void {
     //grab everything by default
-    this.driverService.getDrivers().subscribe(data => this.drivers = data);
-    this.constructorService.getConstructors().subscribe(data => this.constructors = data);
-    this.seasonService.getSeasons().subscribe(data => this.seasons = data);
-
-
+    this.drivers$ = this.driverService.getDrivers();
+    this.constructors$ = this.constructorService.getConstructors();
+    this.seasons$ = this.seasonService.getSeasons();
   }
   public getResults(){
+    //log results for debugging
     this.resultsService.getResults(this.selectedDriver, this.selectedConstructor, this.selectedSeason).subscribe(data => console.log(data));
     //send our results to the service
-    this.resultsService.getResults(this.selectedDriver, this.selectedConstructor, this.selectedSeason).subscribe(data => this.searchResults = data);
+    this.raceResults$ = this.resultsService.getResults(this.selectedDriver, this.selectedConstructor, this.selectedSeason);
+
     if(this.selectedDriver)
       this.isMissingDriver = false
+
   }
 
   public updateInfo(){
     //filter all other boxes depending on what is currently selected
     if (this.selectedConstructor &&  this.selectedSeason){
-      this.driverService.getDriversByConstructorAndYear(this.selectedConstructor, this.selectedSeason).subscribe(data => this.drivers = data)
+      this.drivers$ = this.driverService.getDriversByConstructorAndYear(this.selectedConstructor, this.selectedSeason);
     }
     else if(this.selectedDriver && this.selectedSeason){
-      this.constructorService.getConstructorByDriverAndYear(this.selectedDriver, this.selectedSeason).subscribe(data => this.constructors = data)
+      this.constructors$ = this.constructorService.getConstructorByDriverAndYear(this.selectedDriver, this.selectedSeason);
     }
     else if (this.selectedDriver && this.selectedConstructor){
-      this.seasonService.getSeasonsByDriverAndConstructor(this.selectedDriver, this.selectedConstructor).subscribe(data => this.seasons = data)
+      this.seasons$ = this.seasonService.getSeasonsByDriverAndConstructor(this.selectedDriver, this.selectedConstructor);
     }
     else if(this.selectedConstructor){
-      this.driverService.getDriversByConstructor(this.selectedConstructor).subscribe(data => this.drivers = data)
-      this.seasonService.getSeasonsByConstructor(this.selectedConstructor).subscribe(data => this.seasons = data)
+      this.drivers$ = this.driverService.getDriversByConstructor(this.selectedConstructor);
+      this.seasons$ = this.seasonService.getSeasonsByConstructor(this.selectedConstructor);
     }
     else if(this.selectedDriver){
-      this.constructorService.getConstructorByDriver(this.selectedDriver).subscribe(data => this.constructors = data)
-      this.seasonService.getSeasonsByDriver(this.selectedDriver).subscribe(data => this.seasons = data)
+      this.constructors$ = this.constructorService.getConstructorByDriver(this.selectedDriver);
+      this.seasons$ = this.seasonService.getSeasonsByDriver(this.selectedDriver);
     }
     else if(this.selectedSeason){
-      this.driverService.getDriversByYear(this.selectedSeason).subscribe(data => this.drivers = data);
-      this.constructorService.getConstructorByYear(this.selectedSeason).subscribe(data => this.constructors = data);
+      this.drivers$ = this.driverService.getDriversByYear(this.selectedSeason);
+      this.constructors$ = this.constructorService.getConstructorByYear(this.selectedSeason);
     }
+    else{
+      this.drivers$ = this.driverService.getDrivers();
+      this.constructors$ = this.constructorService.getConstructors();
+      this.seasons$ = this.seasonService.getSeasons();
+    }
+
   }
 
 }
