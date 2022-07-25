@@ -7,7 +7,7 @@ import { DriversComponent } from './drivers/drivers.component';
 import { ConstructorsComponent } from './constructors/constructors.component';
 import { SearchComponent } from './search/search.component';
 const routes: Routes = [
-  { path: '', redirectTo: 'home', pathMatch: 'full'},
+  { path: '', redirectTo: 'search', pathMatch: 'full'},
   { path: 'home', component: HomeComponent },
   { path: 'about', component: AboutComponent},
   { path: 'circuits', component:CircuitComponent},

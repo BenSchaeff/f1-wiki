@@ -1,26 +1,28 @@
-.resultsTable {
-  width: 80%;
 
-}
-
-.resultsTable-position {
-  width: 32px;
-  border-right: 1px solid currentColor;
-  padding-right: 24px;
+.season, .raceName, .driver, .constructor, .position, .points{
   text-align: center;
 }
-
-.mat-column-demo-name {
-  padding-left: 16px;
-  font-size: 20px;
+.season{
+  width: 60px;
 }
-
-.mat-column-demo-weight {
-  font-style: italic;
+.raceName{
+  width: 200px;
 }
+.driver{
+  width: 200px
+}
+.constructor{
+  width: 200px;
+}
+.position, .points{
+  width: 100px
+}
+.paginator-hidden{
 
-.mat-column-demo-symbol {
-  width: 32px;
-  text-align: center;
-  font-weight: bold;
+  visibility: hidden;
+}
+.paginator
+{
+  width: 908px;
+  visibility: visible;
 }

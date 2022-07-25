@@ -1,34 +1,38 @@
 
-<table mat-table [dataSource]="raceResults$" class="resultsTable">
+<table mat-table [dataSource]="dataSource" class="resultsTable">
 
   <ng-container matColumnDef="Season">
-    <th mat-header-cell *matHeaderCellDef="">Season</th>
-    <td mat-cell *matCellDef="let result">{{result.season}}</td>
+    <th mat-header-cell *matHeaderCellDef=""class = "season">Season</th>
+    <td mat-cell *matCellDef="let result" class = "season">{{result.season}}</td>
   </ng-container>
 
   <ng-container matColumnDef="RaceName">
-    <th mat-header-cell *matHeaderCellDef="">Race Name</th>
-    <td mat-cell *matCellDef="let result">{{result.raceName}}</td>
+    <th mat-header-cell *matHeaderCellDef="" class = "raceName">Race Name</th>
+    <td mat-cell *matCellDef="let result" class = "raceName">{{result.raceName}}</td>
   </ng-container>
 
   <ng-container matColumnDef="Driver">
-    <th mat-header-cell *matHeaderCellDef="">Driver</th>
-    <td mat-cell *matCellDef="let result" >{{result.Driver.givenName}} {{result.Driver.familyName}}</td>
+    <th mat-header-cell *matHeaderCellDef="" class = "driver">Driver</th>
+    <td mat-cell *matCellDef="let result" class = "driver">{{result.Driver.givenName}} {{result.Driver.familyName}}</td>
+  </ng-container>
+
+  <ng-container matColumnDef="Constructor">
+    <th mat-header-cell *matHeaderCellDef="" class = "constructor">Constructor</th>
+    <td mat-cell *matCellDef="let result" class = "constructor">{{result.Constructor.name}}</td>
   </ng-container>
 
   <ng-container matColumnDef="Position">
-    <th mat-header-cell *matHeaderCellDef="">Position</th>
-    <td mat-cell *matCellDef="let result">{{result.position}}</td>
+    <th mat-header-cell *matHeaderCellDef="" class = "position">Finishing Position</th>
+    <td mat-cell *matCellDef="let result" class = "position">{{result.position}}</td>
   </ng-container>
 
   <ng-container matColumnDef="Points">
-    <th mat-header-cell *matHeaderCellDef="">Points Scored</th>
-    <td mat-cell *matCellDef="let result">{{result.points}}</td>
+    <th mat-header-cell *matHeaderCellDef="" class = "points">Points Scored</th>
+    <td mat-cell *matCellDef="let result" class = "points">{{result.points}}</td>
   </ng-container>
 
 
   <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
   <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-
-
 </table>
+<mat-paginator [pageSizeOptions]="[10, 15, 20]"showFirstLastButtons class = "paginator"></mat-paginator>

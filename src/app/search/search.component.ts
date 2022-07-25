@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { DriverService } from '../services/driver.service';
 import { ConstructorService } from '../services/constructors.service';
 import { ResultsService } from '../services/results.service';
@@ -6,7 +6,7 @@ import { SeasonsService } from '../services/seasons.service';
 import { Driver, Constructor, Season, Race, Result } from '../models/all.models';
 import { ResultsComponent } from '../results/results.component';
 import { Observable, map, race } from 'rxjs';
-import { pipe } from 'rxjs';
+
 
 
 @Component({
@@ -15,7 +15,7 @@ import { pipe } from 'rxjs';
   styleUrls: ['./search.component.css']
 })
 export class SearchComponent implements OnInit {
-
+  @ViewChild(ResultsComponent, {static : false}) childComponent : ResultsComponent;
   public drivers$: Observable<Driver[]>;
   public constructors$: Observable<Constructor[]>
   public seasons$ : Observable<Season[]>
@@ -27,7 +27,7 @@ export class SearchComponent implements OnInit {
   public selectedDriver : string = '';
   public selectedConstructor: string = '';
   public selectedSeason: string = '';
-  public isMissingDriver : boolean = true;
+  public showTable : boolean = false;
 
   constructor(private driverService : DriverService,
               private constructorService : ConstructorService,
@@ -51,26 +51,40 @@ export class SearchComponent implements OnInit {
 
   public updateInfo(){
     //filter all other boxes depending on what is currently selected
-    if (this.selectedConstructor &&  this.selectedSeason){
+    if(this.selectedConstructor && this.selectedDriver && this.selectedSeason){
       this.drivers$ = this.driverService.getDriversByConstructorAndYear(this.selectedConstructor, this.selectedSeason);
+      this.seasons$ = this.seasonService.getSeasonsByDriverAndConstructor(this.selectedDriver, this.selectedConstructor);
+      this.constructors$ = this.constructorService.getConstructorByDriverAndYear(this.selectedDriver, this.selectedSeason);
+    }
+    else if (this.selectedConstructor &&  this.selectedSeason){
+      this.drivers$ = this.driverService.getDriversByConstructorAndYear(this.selectedConstructor, this.selectedSeason);
+      this.constructors$ = this.constructorService.getConstructorByYear(this.selectedSeason);
+      this.seasons$ = this.seasonService.getSeasonsByConstructor(this.selectedConstructor)
     }
     else if(this.selectedDriver && this.selectedSeason){
       this.constructors$ = this.constructorService.getConstructorByDriverAndYear(this.selectedDriver, this.selectedSeason);
+      this.drivers$ = this.driverService.getDriversByYear(this.selectedSeason);
+      this.seasons$ = this.seasonService.getSeasonsByDriver(this.selectedDriver);
     }
     else if (this.selectedDriver && this.selectedConstructor){
       this.seasons$ = this.seasonService.getSeasonsByDriverAndConstructor(this.selectedDriver, this.selectedConstructor);
+      this.drivers$ = this.driverService.getDriversByConstructor(this.selectedConstructor);
+      this.constructors$ = this.constructorService.getConstructorByDriver(this.selectedDriver)
     }
     else if(this.selectedConstructor){
       this.drivers$ = this.driverService.getDriversByConstructor(this.selectedConstructor);
       this.seasons$ = this.seasonService.getSeasonsByConstructor(this.selectedConstructor);
+      this.constructors$ = this.constructorService.getConstructors()
     }
     else if(this.selectedDriver){
       this.constructors$ = this.constructorService.getConstructorByDriver(this.selectedDriver);
       this.seasons$ = this.seasonService.getSeasonsByDriver(this.selectedDriver);
+      this.drivers$ = this.driverService.getDrivers();
     }
     else if(this.selectedSeason){
       this.drivers$ = this.driverService.getDriversByYear(this.selectedSeason);
       this.constructors$ = this.constructorService.getConstructorByYear(this.selectedSeason);
+      this.seasons$ = this.seasonService.getSeasons();
     }
     else{
       this.drivers$ = this.driverService.getDrivers();

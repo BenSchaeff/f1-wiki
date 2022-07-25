@@ -29,7 +29,7 @@ export interface Result{
   laps : string
   number : string
   points : string
-  poisition : string;
+  position : string;
   raceName?: string;
   season?: string;
 }
